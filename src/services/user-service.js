@@ -34,7 +34,7 @@ class UserService {
       // step 2: compare password
       const passMatch = this.checkPassword(inputPassword, user.password);
       if (!passMatch) {
-        throw new Error("Password is incorrect");
+        console.log("Password does not match");
       }
       // step 3: create token
       const token = this.createToken({ email: user.email, id: user.id });
