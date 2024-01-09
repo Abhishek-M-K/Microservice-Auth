@@ -13,6 +13,15 @@ class UserService {
       console.log("Something went wrong in service layer : ", error);
     }
   }
+
+  async getByEmail(data) {
+    try {
+      const user = await this.userRepository.getByEmail(data);
+      return user;
+    } catch (error) {
+      console.log("Something went wrong in service layer : ", error);
+    }
+  }
 }
 
 module.exports = UserService;

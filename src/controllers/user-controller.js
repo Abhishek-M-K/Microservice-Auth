@@ -25,6 +25,27 @@ const create = async (req, res) => {
   }
 };
 
+const getByEmail = async (req, res) => {
+  try {
+    const response = await userServiceInstance.getByEmail(req.query.email);
+    res.status(201).json({
+      success: true,
+      data: response,
+      err: {},
+      message: "User fetched successfully",
+    });
+  } catch (error) {
+    console.log("Something went wrong in controller layer : ", error);
+    res.status(500).json({
+      success: false,
+      data: {},
+      err: error,
+      message: "Not able to fetch user",
+    });
+  }
+};
+
 module.exports = {
   create,
+  getByEmail,
 };
