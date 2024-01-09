@@ -27,6 +27,23 @@ class UserService {
     }
   }
 
+  async signIn(email, inputPassword) {
+    try {
+      // step 1: get user by email
+      const user = await this.userRepository.getByEmail(email);
+      // step 2: compare password
+      const passMatch = this.checkPassword(inputPassword, user.password);
+      if (!passMatch) {
+        throw new Error("Password is incorrect");
+      }
+      // step 3: create token
+      const token = this.createToken({ email: user.email, id: user.id });
+      return token;
+    } catch (error) {
+      console.log("Something went wrong in signIn service : ", error);
+    }
+  }
+
   checkPassword(inputPassword, encryptedPassword) {
     try {
       const result = bcrypt.compareSync(inputPassword, encryptedPassword);

@@ -28,7 +28,7 @@ const create = async (req, res) => {
 const getByEmail = async (req, res) => {
   try {
     const response = await userServiceInstance.getByEmail(req.query.email);
-    res.status(201).json({
+    return res.status(200).json({
       success: true,
       data: response,
       err: {},
@@ -45,7 +45,31 @@ const getByEmail = async (req, res) => {
   }
 };
 
+const signIn = async (req, res) => {
+  try {
+    const response = await userServiceInstance.signIn(
+      req.body.email,
+      req.body.password
+    );
+    return res.status(200).json({
+      success: true,
+      data: response,
+      err: {},
+      message: "User signin successfully",
+    });
+  } catch (error) {
+    console.log("Something went wrong in controller layer : ", error);
+    res.status(500).json({
+      success: false,
+      data: {},
+      err: error,
+      message: "Not able to signIn the user",
+    });
+  }
+};
+
 module.exports = {
   create,
   getByEmail,
+  signIn,
 };
