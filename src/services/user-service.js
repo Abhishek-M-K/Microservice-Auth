@@ -88,6 +88,19 @@ class UserService {
       console.log("Something went wrong in token validation : ", error);
     }
   }
+
+  /* NOT NECESSARY SINCE IN MODEL SCHEMA , ITS HAVING VALIDATION FOR EMAIL
+  validateMail(email) {
+    try {
+      const isValid = validator.validate(email);
+      if (!isValid) {
+        console.log("Please enter a valid email");
+      }
+    } catch (error) {
+      console.log("Something went wrong in email validation : ", error);
+    }
+  }
+*/
 }
 
 module.exports = UserService;
