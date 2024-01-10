@@ -37,8 +37,26 @@ class UserService {
         console.log("Password does not match");
       }
       // step 3: create token
-      const token = this.createToken({ email: user.email, id: user.id });
-      return token;
+      const jwtToken = this.createToken({ email: user.email, id: user.id });
+      return jwtToken;
+    } catch (error) {
+      console.log("Something went wrong in signIn service : ", error);
+    }
+  }
+
+  async isUserAuthenticated(token) {
+    try {
+      const isTokenValid = this.verifyToken(token);
+      if (!isTokenValid) {
+        console.log("Token is not valid");
+      }
+
+      const user = await this.userRepository.getByEmail(isTokenValid.email);
+      if (!user) {
+        console.log("User does not exist");
+      }
+
+      return user.id;
     } catch (error) {
       console.log("Something went wrong in signIn service : ", error);
     }

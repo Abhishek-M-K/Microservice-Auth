@@ -68,8 +68,32 @@ const signIn = async (req, res) => {
   }
 };
 
+//bearer token or bearer authentication is the authentication mechanism
+//where the user has to send the token in the header of the request
+const isUserAuthenticated = async (req, res) => {
+  try {
+    const token = req.headers["x-access-token"];
+    const response = await userServiceInstance.isUserAuthenticated(token);
+    return res.status(200).json({
+      success: true,
+      data: response,
+      err: {},
+      message: "User authenticated successfully",
+    });
+  } catch (error) {
+    console.log("Something went wrong in controller layer : ", error);
+    res.status(500).json({
+      success: false,
+      data: {},
+      err: error,
+      message: "User not authenticated",
+    });
+  }
+};
+
 module.exports = {
   create,
   getByEmail,
   signIn,
+  isUserAuthenticated,
 };
