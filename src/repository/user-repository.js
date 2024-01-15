@@ -32,6 +32,20 @@ class UserRepository {
       console.log("Something went wrong in repository layer : ", error);
     }
   }
+
+  async isAdmin(id) {
+    try {
+      const user = await User.findByPk(id);
+      const adminRole = await Role.findOne({
+        where: {
+          name: "ADMIN",
+        },
+      });
+      return user.hasRole(adminRole);
+    } catch (error) {
+      console.log("Something went wrong in repository layer : ", error);
+    }
+  }
 }
 
 module.exports = UserRepository;

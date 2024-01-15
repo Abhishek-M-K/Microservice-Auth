@@ -89,6 +89,14 @@ class UserService {
     }
   }
 
+  isAdmin(id) {
+    try {
+      return this.userRepository.isAdmin(id);
+    } catch (error) {
+      console.log("Something went wrong in service layer: ", error);
+    }
+  }
+
   /* NOT NECESSARY SINCE IN MODEL SCHEMA , ITS HAVING VALIDATION FOR EMAIL
   validateMail(email) {
     try {

@@ -91,9 +91,30 @@ const isUserAuthenticated = async (req, res) => {
   }
 };
 
+const isAdmin = async (req, res) => {
+  try {
+    const response = await userServiceInstance.isAdmin(req.query.id);
+    return res.status(200).json({
+      success: true,
+      data: response,
+      err: {},
+      message: "User role fetched successfully",
+    });
+  } catch (error) {
+    console.log("Something went wrong in controller layer : ", error);
+    res.status(500).json({
+      success: false,
+      data: {},
+      err: error,
+      message: "Not able to fetch user role.",
+    });
+  }
+};
+
 module.exports = {
   create,
   getByEmail,
   signIn,
   isUserAuthenticated,
+  isAdmin,
 };
