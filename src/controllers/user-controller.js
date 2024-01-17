@@ -59,11 +59,11 @@ const signIn = async (req, res) => {
     });
   } catch (error) {
     console.log("Something went wrong in controller layer : ", error);
-    res.status(500).json({
+    res.status(error.statusCode).json({
       success: false,
       data: {},
-      err: error,
-      message: "Not able to signIn the user",
+      err: error.explanation,
+      message: error.message,
     });
   }
 };

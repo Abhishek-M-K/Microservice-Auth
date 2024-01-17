@@ -31,12 +31,12 @@ class UserService {
     }
   }
 
-  async getByEmail(data) {
+  async getByEmail(userMail) {
     try {
-      const user = await this.userRepository.getByEmail(data);
+      const user = await this.userRepository.getByEmail(userMail);
       return user;
     } catch (error) {
-      console.log("Something went wrong in service layer : ", error);
+      console.log("Something went wrong in service layer ");
     }
   }
 
@@ -44,16 +44,34 @@ class UserService {
     try {
       // step 1: get user by email
       const user = await this.userRepository.getByEmail(email);
+      if (!user) {
+        throw new AppErrors(
+          "AttributeNotFound",
+          "Invalid email sent in the request",
+          "Enter the valid email, as this does not exists",
+          404
+        );
+      }
       // step 2: compare password
-      const passMatch = this.checkPassword(inputPassword, user.password);
+      const passMatch = await this.checkPassword(inputPassword, user.password);
       if (!passMatch) {
         console.log("Password does not match");
+        // throw new AppErrors(
+        //   "ClientError",
+        //   "Something went wrong in service layer",
+        //   "Enter the correct password",
+        //   401
+        // );
       }
       // step 3: create token
       const jwtToken = this.createToken({ email: user.email, id: user.id });
       return jwtToken;
     } catch (error) {
-      console.log("Something went wrong in signIn service : ", error);
+      if (error.name === "AttributeNotFound") {
+        throw error;
+      }
+      console.log("Something went wrong in signIn service : ");
+      throw error;
     }
   }
 
@@ -75,10 +93,9 @@ class UserService {
     }
   }
 
-  checkPassword(inputPassword, encryptedPassword) {
+  async checkPassword(inputPassword, encryptedPassword) {
     try {
-      const result = bcrypt.compareSync(inputPassword, encryptedPassword);
-      return result;
+      return await bcrypt.compareSync(inputPassword, encryptedPassword);
     } catch (error) {
       console.log("Something went wrong in password validation : ", error);
     }
@@ -122,6 +139,18 @@ class UserService {
     }
   }
 */
+
+  /*  TRY n RUN example
+      if (error.name === "AttributeNotFound") {
+        throw error;
+      }
+      throw new AppErrors(
+        "ClientError",
+        "Something went wrong in service layer",
+        "Required fields not valid",
+        404
+      );
+      */
 }
 
 module.exports = UserService;
