@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 
 const UserRepository = require("../repository/user-repository");
 const { JWT_SECRET } = require("../config/serverConfig");
+const ValidationError = require("../utils/validation-handler");
+const AppErrors = require("../utils/error-handler");
 
 class UserService {
   constructor() {
@@ -14,7 +16,16 @@ class UserService {
       const user = await this.userRepository.create(data);
       return user;
     } catch (error) {
-      console.log("Something went wrong in service layer : ", error);
+      if (error.name === "ValidationError") {
+        throw error;
+      }
+      console.log("Something went wrong in service layer ");
+      throw new AppErrors(
+        "ServerError",
+        "Something went wrong in service layer",
+        "Required fields not valid",
+        500
+      );
     }
   }
 

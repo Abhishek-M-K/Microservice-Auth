@@ -15,12 +15,12 @@ const create = async (req, res) => {
       message: "User created successfully",
     });
   } catch (error) {
-    console.log("Something went wrong in controller layer : ", error);
-    res.status(500).json({
+    // console.log("Something went wrong in controller layer : ", error);
+    res.status(error.statusCode).json({
       success: false,
       data: {},
-      err: error,
-      message: "Not able to create user",
+      err: error.explanation,
+      message: error.message,
     });
   }
 };
