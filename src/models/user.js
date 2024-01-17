@@ -1,6 +1,5 @@
 "use strict";
 const { Model } = require("sequelize");
-
 const bcrypt = require("bcrypt");
 
 const { SALT } = require("../config/serverConfig");
@@ -33,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          min: 8, // Use validator package to validate password length
+          len: [8, 50], // Use validator package to validate password length
         },
       },
     },
