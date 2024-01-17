@@ -16,7 +16,9 @@ class UserService {
       const user = await this.userRepository.create(data);
       return user;
     } catch (error) {
-      if (error.name === "ValidationError") {
+      if (error.name === "SequelizeValidationError") {
+        // earlier it was throwing 500 error internal server error
+        // now it will throw 400 error fro bad req
         throw error;
       }
       console.log("Something went wrong in service layer ");
