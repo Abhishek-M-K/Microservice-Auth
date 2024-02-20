@@ -6,7 +6,7 @@ const { AuthReqValidator } = require("../../middlewares/index");
 
 router.post("/signup", AuthReqValidator.validateUser, UserController.create);
 router.post("/signin", AuthReqValidator.validateUser, UserController.signIn);
-router.get("/users", UserController.getByEmail);
+// router.get("/users", UserController.getById);
 router.get("/isUserAuthenticated", UserController.isUserAuthenticated);
 router.get(
   "/isAdmin",

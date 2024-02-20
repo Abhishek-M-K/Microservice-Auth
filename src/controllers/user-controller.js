@@ -1,3 +1,4 @@
+const { response } = require("express");
 const UserService = require("../services/user-service");
 
 const userServiceInstance = new UserService();
@@ -25,25 +26,25 @@ const create = async (req, res) => {
   }
 };
 
-const getByEmail = async (req, res) => {
-  try {
-    const response = await userServiceInstance.getByEmail(req.query.email);
-    return res.status(200).json({
-      success: true,
-      data: response,
-      err: {},
-      message: "User fetched successfully",
-    });
-  } catch (error) {
-    console.log("Something went wrong in controller layer : ", error);
-    res.status(500).json({
-      success: false,
-      data: {},
-      err: error,
-      message: "Not able to fetch user",
-    });
-  }
-};
+// const getByEmail = async (req, res) => {
+//   try {
+//     const response = await userServiceInstance.getByEmail(req.query.email);
+//     return res.status(200).json({
+//       success: true,
+//       data: response,
+//       err: {},
+//       message: "User fetched successfully",
+//     });
+//   } catch (error) {
+//     console.log("Something went wrong in controller layer : ", error);
+//     res.status(500).json({
+//       success: false,
+//       data: {},
+//       err: error,
+//       message: "Not able to fetch user",
+//     });
+//   }
+// };
 
 const signIn = async (req, res) => {
   try {
@@ -59,11 +60,11 @@ const signIn = async (req, res) => {
     });
   } catch (error) {
     console.log("Something went wrong in controller layer : ", error);
-    res.status(error.statusCode).json({
+    res.status(500).json({
       success: false,
       data: {},
-      err: error.explanation,
-      message: error.message,
+      err: error,
+      message: 'Something went wrong',
     });
   }
 };
@@ -113,7 +114,7 @@ const isAdmin = async (req, res) => {
 
 module.exports = {
   create,
-  getByEmail,
+  // getByEmail,
   signIn,
   isUserAuthenticated,
   isAdmin,

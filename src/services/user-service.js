@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 
 const UserRepository = require("../repository/user-repository");
 const { JWT_SECRET } = require("../config/serverConfig");
-const ValidationError = require("../utils/validation-handler");
 const AppErrors = require("../utils/error-handler");
 
 class UserService {
@@ -22,46 +21,42 @@ class UserService {
         throw error;
       }
       console.log("Something went wrong in service layer ");
-      throw new AppErrors(
-        "ServerError",
-        "Something went wrong in service layer",
-        "Required fields not valid",
-        500
-      );
+      // throw new AppErrors(
+      //   "ServerError",
+      //   "Something went wrong in service layer",
+      //   "Required fields not valid",
+      //   500
+      // ); 
+      throw error;
     }
   }
 
-  async getByEmail(userMail) {
+  /*async getByEmail(userMail) {
     try {
       const user = await this.userRepository.getByEmail(userMail);
       return user;
     } catch (error) {
       console.log("Something went wrong in service layer ");
     }
-  }
+  }*/
 
-  async signIn(email, inputPassword) {
+  async signIn(email, plainPassword) {
     try {
       // step 1: get user by email
       const user = await this.userRepository.getByEmail(email);
-      if (!user) {
-        throw new AppErrors(
-          "AttributeNotFound",
-          "Invalid email sent in the request",
-          "Enter the valid email, as this does not exists",
-          404
-        );
-      }
+      // if (!user) {
+      //   throw new AppErrors(
+      //     "AttributeNotFound",
+      //     "Invalid email sent in the request",
+      //     "Enter the valid email, as this does not exists",
+      //     404
+      //   );
+      // }
       // step 2: compare password
-      const passMatch = await this.checkPassword(inputPassword, user.password);
+      const passMatch = await this.checkPassword(plainPassword, user.password);
       if (!passMatch) {
         console.log("Password does not match");
-        // throw new AppErrors(
-        //   "ClientError",
-        //   "Something went wrong in service layer",
-        //   "Enter the correct password",
-        //   401
-        // );
+        throw { error: "Password is incorrect" };
       }
       // step 3: create token
       const jwtToken = this.createToken({ email: user.email, id: user.id });
@@ -82,7 +77,7 @@ class UserService {
         console.log("Token is not valid");
       }
 
-      const user = await this.userRepository.getByEmail(isTokenValid.email);
+      const user = await this.userRepository.getById(isTokenValid.email);
       if (!user) {
         console.log("User does not exist");
       }
@@ -93,9 +88,9 @@ class UserService {
     }
   }
 
-  async checkPassword(inputPassword, encryptedPassword) {
+  checkPassword(userInputPlainPassword, encryptedPassword) {
     try {
-      return await bcrypt.compareSync(inputPassword, encryptedPassword);
+      return bcrypt.compareSync(userInputPlainPassword, encryptedPassword);
     } catch (error) {
       console.log("Something went wrong in password validation : ", error);
     }
