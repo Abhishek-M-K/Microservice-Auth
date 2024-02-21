@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const UserRepository = require("../repository/user-repository");
 const { JWT_SECRET } = require("../config/serverConfig");
@@ -26,7 +26,7 @@ class UserService {
       //   "Something went wrong in service layer",
       //   "Required fields not valid",
       //   500
-      // ); 
+      // );
       throw error;
     }
   }
@@ -44,16 +44,16 @@ class UserService {
     try {
       // step 1: get user by email
       const user = await this.userRepository.getByEmail(email);
-      // if (!user) {
-      //   throw new AppErrors(
-      //     "AttributeNotFound",
-      //     "Invalid email sent in the request",
-      //     "Enter the valid email, as this does not exists",
-      //     404
-      //   );
-      // }
+      if (!user) {
+        throw new AppErrors(
+          "AttributeNotFound",
+          "Invalid email sent in the request",
+          "Enter the valid email, as this does not exists",
+          404
+        );
+      }
       // step 2: compare password
-      const passMatch = await this.checkPassword(plainPassword, user.password);
+      const passMatch= bcrypt.compare(plainPassword, user.password);
       if (!passMatch) {
         console.log("Password does not match");
         throw { error: "Password is incorrect" };
@@ -88,13 +88,14 @@ class UserService {
     }
   }
 
-  checkPassword(userInputPlainPassword, encryptedPassword) {
+  /*async checkPassword(userInputPlainPassword, encryptedPassword) {
     try {
-      return bcrypt.compareSync(userInputPlainPassword, encryptedPassword);
+      // return bcrypt.compareSync(userInputPlainPassword, encryptedPassword);
+      return await bcrypt.compare(userInputPlainPassword, encryptedPassword);
     } catch (error) {
       console.log("Something went wrong in password validation : ", error);
     }
-  }
+  }*/
 
   createToken(user) {
     try {
